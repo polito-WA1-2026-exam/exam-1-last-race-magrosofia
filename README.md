@@ -1,5 +1,5 @@
 # Exam #N: "Exam Title"
-## Student: s123456 LASTNAME FIRSTNAME 
+## Student: s353776 MAGRO SOFIA 
 
 ## React Client Application Routes
 
@@ -22,9 +22,42 @@
 
 ## Database Tables
 
-- Table `users` - contains xx yy zz
-- Table `something` - contains ww qq ss
-- ...
+- Table `users` - contains registered users. Fields:
+   - id
+   - email
+   - password_hash
+   - salt
+- Table `stations` - contains all possible stations. Fields:
+   - id
+   - name
+   - is_interchange: when a station is served by more than one line
+- Table `lines` - contains all metro lines of the network. Fields:
+  - id
+  - color
+- Table `events` - contains all possible events that can occur during a segment. Fields:
+  - id
+  - description
+  - cost
+- Table `segments` - contains pairs of stations connected. Fields:
+    - id
+    - station1
+    - station2
+    - line
+- Table `games` - contains all recorded games played by registered users. Fields:
+  - id
+  - user_id
+  - start_station
+  - destination_station
+  - started_at: game creation timestamp
+  - completed_at: game completation timestamp
+  - valid_route
+  - final_coins
+- Table `game_segments` - contains the ordered list of segments selected by the player for each game. Fields:
+  - game_id
+  - step_number: position of the segment in the submitted route 
+  - segment_id
+  - event_id
+  - actual_coins
 
 ## Main React Components
 
