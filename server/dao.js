@@ -1,5 +1,6 @@
 import sqlite from 'sqlite3';
 import crypto from 'crypto';
+import { Segment, Game } from './Models.js';
 
 // Open the database
 const db = new sqlite.Database('db.sqlite', (err) => {
@@ -271,20 +272,20 @@ const getSegmentsByIds = (segmentIds) => {
       if (err) {
         reject(err);
       } else {
-        resolve(rows.map((r) => ({
-          id: r.segment_id,
-          line: r.line,
-          station1: {
-            id: r.station1_id,
-            name: r.station1_name,
-            isInterchange: r.station1_is_interchange === 1
-          },
-          station2: {
-            id: r.station2_id,
-            name: r.station2_name,
-            isInterchange: r.station2_is_interchange === 1
-          }
-        })));
+        resolve(rows.map((r) => new Segment(
+            r.segment_id,
+            {
+                id: r.station1_id,
+                name: r.station1_name,
+                isInterchange: r.station1_is_interchange === 1
+            },
+            {
+                id: r.station2_id,
+                name: r.station2_name,
+                isInterchange: r.station2_is_interchange === 1
+            },
+            r.line
+            )));
       }
     });
   });
@@ -352,16 +353,16 @@ const getGameById = (gameId) => {
         resolve(null);
       } else {
         //case 3: game found int he db
-        resolve({
-          id: row.id,
-          userId: row.user_id,
-          startStation: row.start_station,
-          destinationStation: row.destination_station,
-          startedAt: row.started_at,
-          completedAt: row.completed_at,
-          validRoute: row.valid_route === null ? null : row.valid_route === 1,
-          finalCoins: row.final_coins
-        });
+        resolve(new Game(
+            row.id,
+            row.user_id,
+            row.start_station,
+            row.destination_station,
+            row.started_at,
+            row.completed_at,
+            row.valid_route === null ? null : row.valid_route === 1,
+            row.final_coins
+            ));
       }
     });
   });
