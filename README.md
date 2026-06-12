@@ -59,7 +59,6 @@
     "lines": [
       {
         "id": 1,
-        "name": "Red Line",
         "color": "red"
       }
     ],
@@ -152,7 +151,7 @@
               },
               "event": {
                 "description": "Wrong platform",
-                "effect": -2
+                "cost": -2
               },
               "coinsAfterStep": 18
             }
@@ -203,6 +202,7 @@
    - is_interchange: when a station is served by more than one line
 - Table `lines` - contains all metro lines of the network. Fields:
   - id
+  - name
   - color
 - Table `events` - contains all possible events that can occur during a segment. Fields:
   - id
@@ -247,5 +247,8 @@
 - username, password (plus any other requested info)
 
 ## Use of AI Tools
-Briefly describe whether you used any AI tools (e.g., ChatGPT, GitHub Copilot, Claude) while working on this project, for which purposes (e.g., clarifying concepts, debugging, generating code), and how you verified or adapted their output.
-If you did not use any AI tools, simply state so.
+## AI usage
+
+AI tools were used as support during the development process, mainly to clarify some requirements, review design choices, prepare example SQL seed data for the database, and define API test cases using a `test.http` file.
+
+The database schema, application logic, API structure, and final implementation were reviewed, adapted, and integrated by me. All generated suggestions were manually checked against the project requirements and tested through DB Browser, REST Client, and direct server execution.
