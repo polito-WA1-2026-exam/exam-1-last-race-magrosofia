@@ -243,8 +243,9 @@
 
 ## Users Credentials
 
-- username, password (plus any other requested info)
-- username, password (plus any other requested info)
+- username: sofia.magro@example.com, password: password
+- username: iris.magro@example.com, password: ciao
+- username: user@example.com, password: esame
 
 ## Use of AI Tools
 ## AI usage
