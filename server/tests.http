@@ -1,0 +1,81 @@
+@baseUrl = http://localhost:3001
+
+### 1. Protected API before login: should return 401
+GET {{baseUrl}}/api/network
+
+
+### 2. Login as Sofia
+# @name login
+POST {{baseUrl}}/api/sessions
+Content-Type: application/json
+
+{
+  "username": "user@example.com",
+  "password": "esame"
+}
+
+
+### 3. Current session: should return logged user
+GET {{baseUrl}}/api/sessions/current
+
+
+### 4. Full network after login: should return stations, lines, segments
+GET {{baseUrl}}/api/network
+
+
+### 5. Ranking
+GET {{baseUrl}}/api/ranking
+
+
+### 6. Create random game
+# @name createGame
+POST {{baseUrl}}/api/games
+
+
+### 7. Submit invalid empty route for the random game
+POST {{baseUrl}}/api/games/{{createGame.response.body.$.gameId}}/route
+Content-Type: application/json
+
+{
+  "route": []
+}
+
+
+### 8. Create another random game
+# @name createGame2
+POST {{baseUrl}}/api/games
+
+
+### 9. Submit route with unknown segment
+POST {{baseUrl}}/api/games/{{createGame2.response.body.$.gameId}}/route
+Content-Type: application/json
+
+{
+  "route": [99999]
+}
+
+
+### 10. Create another random game
+# @name createGame3
+POST {{baseUrl}}/api/games
+
+
+### 11. Submit route with duplicated segment
+POST {{baseUrl}}/api/games/{{createGame3.response.body.$.gameId}}/route
+Content-Type: application/json
+
+{
+  "route": [1, 1]
+}
+
+
+### 12. Logout
+DELETE {{baseUrl}}/api/sessions/current
+
+
+### 13. Current session after logout: should return 401
+GET {{baseUrl}}/api/sessions/current
+
+
+### 14. Protected API after logout: should return 401
+GET {{baseUrl}}/api/network
