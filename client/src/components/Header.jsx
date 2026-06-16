@@ -1,13 +1,17 @@
+import React from 'react';
+import { useNavigate } from 'react-router';
 import moleLogo from '../assets/mole.svg';
 
-function Header({ user, currentPage, onNavigate, onLogout }) {
+const Header = (props) => {
+  const navigate = useNavigate();
+
   return (
     <header className="app-header">
       <div className="header-left">
         <button
           type="button"
           className="brand-button"
-          onClick={() => onNavigate('home')}
+          onClick={() => navigate('/')}
         >
           <img
             src={moleLogo}
@@ -22,25 +26,45 @@ function Header({ user, currentPage, onNavigate, onLogout }) {
       <nav className="header-nav">
         <button
           type="button"
-          className={`nav-button ${currentPage === 'home' ? 'active' : ''}`}
-          onClick={() => onNavigate('home')}
+          className="nav-button"
+          onClick={() => navigate('/')}
         >
           Home
         </button>
 
         <button
           type="button"
-          className={`nav-button ${currentPage === 'instructions' ? 'active' : ''}`}
-          onClick={() => onNavigate('instructions')}
+          className="nav-button"
+          onClick={() => navigate('/instructions')}
         >
           Instructions
         </button>
 
-        {!user ? (
+        {props.user && (
+          <>
+            <button
+              type="button"
+              className="nav-button"
+              onClick={() => navigate('/setup')}
+            >
+              New Game
+            </button>
+
+            <button
+              type="button"
+              className="nav-button"
+              onClick={() => navigate('/ranking')}
+            >
+              Ranking
+            </button>
+          </>
+        )}
+
+        {!props.user ? (
           <button
             type="button"
-            className={`nav-button ${currentPage === 'login' ? 'active' : ''}`}
-            onClick={() => onNavigate('login')}
+            className="nav-button"
+            onClick={() => navigate('/login')}
           >
             Login
           </button>
@@ -48,7 +72,7 @@ function Header({ user, currentPage, onNavigate, onLogout }) {
           <button
             type="button"
             className="nav-button"
-            onClick={onLogout}
+            onClick={props.onLogout}
           >
             Logout
           </button>
@@ -56,6 +80,6 @@ function Header({ user, currentPage, onNavigate, onLogout }) {
       </nav>
     </header>
   );
-}
+};
 
 export default Header;

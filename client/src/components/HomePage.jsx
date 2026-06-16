@@ -1,6 +1,9 @@
+import { useNavigate } from 'react-router';
 import HeroMetroMap from './MetroMap';
 
-function HomePage({ user, onNavigate }) {
+const HomePage = (props) => {
+  const navigate = useNavigate();
+
   return (
     <section className="home-page">
       <div className="hero-card">
@@ -28,16 +31,16 @@ function HomePage({ user, onNavigate }) {
             <button
               type="button"
               className="primary-action"
-              onClick={() => onNavigate('instructions')}
+              onClick={() => navigate('/instructions')}
             >
               Read Instructions
             </button>
 
-            {!user ? (
+            {!props.user ? (
               <button
                 type="button"
                 className="secondary-action"
-                onClick={() => onNavigate('login')}
+                onClick={() => navigate('/login')}
               >
                 Login to Play
               </button>
@@ -45,7 +48,7 @@ function HomePage({ user, onNavigate }) {
               <button
                 type="button"
                 className="secondary-action"
-                onClick={() => onNavigate('setup')}
+                onClick={() => navigate('/setup')}
               >
                 Start New Game
               </button>
@@ -81,6 +84,6 @@ function HomePage({ user, onNavigate }) {
       </div>
     </section>
   );
-}
+};
 
 export default HomePage;

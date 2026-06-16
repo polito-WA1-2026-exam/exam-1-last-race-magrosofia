@@ -4,7 +4,7 @@ function HeroMetroMap() {
     { x: 190, y: 80, interchange: true },
     { x: 280, y: 150, interchange: true },
     { x: 410, y: 150, interchange: true },
-    { x: 520, y: 220, interchange: true },   // <-- questo è il nodo rosso/verde
+    { x: 520, y: 220, interchange: true },   
     { x: 640, y: 220 },
 
     { x: 95, y: 320 },
