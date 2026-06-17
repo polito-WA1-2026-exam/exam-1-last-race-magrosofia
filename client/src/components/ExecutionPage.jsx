@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import { Alert, Badge, Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 
 const INITIAL_COINS = 20;
 
@@ -44,59 +45,63 @@ function ExecutionPage() {
 
   if (!routeResult || Number(gameId) !== routeResult.gameId) {
     return (
-      <section className="page-card game-page">
-        <div className="page-heading">
-          <p className="eyebrow">Execution phase</p>
-          <h2>Execution data not available</h2>
-          <p>
-            Complete the planning phase first. Direct access to this route is not
-            part of the normal game flow.
-          </p>
+      <section className="page-card">
+        <div className="mb-4">
+            <p className="text-danger fw-bold text-uppercase small mb-1">
+                Execution phase
+            </p>
+            <h2 className="text-white fw-bold mb-2">
+                Execution data not available
+            </h2>
+            <p className="text-secondary mb-0">
+                Complete the planning phase first. Direct access to this route is not
+                part of the normal game flow.
+            </p>
         </div>
 
-        <button
-          type="button"
-          className="primary-action"
+        <Button
+          variant="danger"
           onClick={() => navigate('/setup')}
         >
           Start New Game
-        </button>
+        </Button>
       </section>
     );
   }
 
   if (!routeResult.validRoute) {
     return (
-      <section className="page-card game-page">
-        <div className="page-heading">
-          <p className="eyebrow">Execution skipped</p>
-          <h2>Invalid route</h2>
-          <p>
-            The route cannot be executed. The player loses all coins and obtains
-            a final score of zero.
-          </p>
-        </div>
+      <section className="page-card">
+        <p className="text-danger fw-bold text-uppercase small mb-1">
+          Execution skipped
+        </p>
+
+        <h2 className="text-white fw-bold">
+          Invalid route
+        </h2>
+
+        <p className="text-secondary">
+          The route cannot be executed. The player loses all coins and obtains
+          a final score of zero.
+        </p>
 
         {automaticSubmission && (
-          <p className="game-warning">
+          <Alert variant="warning">
             The route was submitted automatically because the planning timer ended.
-          </p>
+          </Alert>
         )}
 
-        <div className="invalid-route-panel">
-          <strong>Reason</strong>
-          <p>
-            {routeResult.reason || 'The submitted route is invalid or incomplete.'}
-          </p>
-        </div>
+        <Alert variant="danger">
+          <strong>Reason: </strong>
+          {routeResult.reason || 'The submitted route is invalid or incomplete.'}
+        </Alert>
 
-        <button
-          type="button"
-          className="primary-action"
+        <Button
+          variant="danger"
           onClick={goToResult}
         >
           View Result
-        </button>
+        </Button>
       </section>
     );
   }
@@ -104,79 +109,137 @@ function ExecutionPage() {
   const allStepsVisible = visibleSteps >= executionSteps.length;
 
   return (
-    <section className="page-card game-page execution-page">
-      <div className="execution-header">
+    <section className="page-card">
+      <div className="d-flex justify-content-between align-items-start mb-4">
         <div>
-          <p className="eyebrow">Execution phase</p>
-          <h2>Travel step by step</h2>
-          <p>
+          <p className="text-danger fw-bold text-uppercase small mb-1">
+            Execution phase
+          </p>
+
+          <h2 className="text-white fw-bold mb-2">
+            Travel step by step
+          </h2>
+
+          <p className="text-secondary mb-0">
             The route has been validated. Reveal each segment to see the random
             event and the updated number of coins.
           </p>
         </div>
 
-        <div className="coins-panel">
-          <span>Coins</span>
-          <strong>{currentCoins}</strong>
-        </div>
+        <Card className="bg-dark text-light border-secondary text-center">
+          <Card.Body className="px-4 py-3">
+            <small className="text-secondary text-uppercase fw-bold">
+              Coins
+            </small>
+
+            <div className="fs-2 fw-bold">
+              {currentCoins}
+            </div>
+          </Card.Body>
+        </Card>
       </div>
 
       {automaticSubmission && (
-        <p className="game-warning">
+        <Alert variant="warning">
           The route was submitted automatically because the planning timer ended.
-        </p>
+        </Alert>
       )}
 
-      <div className="execution-steps">
-        {executionSteps.slice(0, visibleSteps).map((step) => (
-          <article key={step.stepNumber} className="execution-step-card">
-            <span className="step-number">Step {step.stepNumber}</span>
+      <Row className="g-3 mb-4">
+        <Col>
+          <Card className="bg-dark text-light border-secondary">
+            <Card.Body>
+              <small className="text-secondary">Start</small>
+              <div className="fw-bold">
+                {gameData?.startStation?.name ?? '-'}
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
 
-            <h3>
-              {step.segment.station1} → {step.segment.station2}
-            </h3>
+        <Col>
+          <Card className="bg-dark text-light border-secondary">
+            <Card.Body>
+              <small className="text-secondary">Destination</small>
+              <div className="fw-bold">
+                {gameData?.destinationStation?.name ?? '-'}
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
 
-            <p>{step.event.description}</p>
-
-            <div className="step-footer">
-              <span
-                className={
-                  step.event.cost >= 0
-                    ? 'event-cost positive'
-                    : 'event-cost negative'
-                }
-              >
-                {formatCost(step.event.cost)} coins
-              </span>
-
-              <strong>{step.coinsAfterStep} coins left</strong>
-            </div>
-          </article>
-        ))}
-      </div>
+        <Col>
+          <Card className="bg-dark text-light border-secondary">
+            <Card.Body>
+              <small className="text-secondary">Visible steps</small>
+              <div className="fw-bold">
+                {visibleSteps} / {executionSteps.length}
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
       {visibleSteps === 0 && (
-        <p className="empty-route">
+        <Alert variant="secondary">
           The journey is ready. Reveal the first segment to start the execution.
-        </p>
+        </Alert>
+      )}
+
+      {visibleSteps > 0 && (
+        <ListGroup className="mb-4">
+          {executionSteps.slice(0, visibleSteps).map((step) => (
+            <ListGroup.Item
+              key={step.stepNumber}
+              className="bg-dark text-light border-secondary"
+            >
+              <div className="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                  <Badge bg="secondary" className="mb-2">
+                    Step {step.stepNumber}
+                  </Badge>
+
+                  <h3 className="h5 mb-2">
+                    {step.segment.station1} → {step.segment.station2}
+                  </h3>
+
+                  <p className="text-secondary mb-0">
+                    {step.event.description}
+                  </p>
+                </div>
+
+                <div className="text-end">
+                  <Badge
+                    bg={step.event.cost >= 0 ? 'success' : 'danger'}
+                    className="mb-2"
+                  >
+                    {formatCost(step.event.cost)} coins
+                  </Badge>
+
+                  <div className="fw-bold">
+                    {step.coinsAfterStep} coins left
+                  </div>
+                </div>
+              </div>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
       )}
 
       {!allStepsVisible ? (
-        <button
-          type="button"
-          className="primary-action"
+        <Button
+          variant="danger"
           onClick={() => setVisibleSteps((oldValue) => oldValue + 1)}
         >
           Reveal Next Step
-        </button>
+        </Button>
       ) : (
-        <button
-          type="button"
-          className="primary-action"
+        <Button
+          variant="danger"
           onClick={goToResult}
         >
           View Final Result
-        </button>
+        </Button>
       )}
     </section>
   );

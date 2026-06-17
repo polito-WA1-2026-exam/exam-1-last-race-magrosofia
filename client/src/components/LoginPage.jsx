@@ -1,73 +1,87 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Button, Col, Form, Row } from 'react-bootstrap';
 
 function LoginPage({ handleLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
 
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setErrorMsg('');
-
     const success = await handleLogin({
-      username: email,
-      password: password
+        username: email,
+        password: password
     });
 
     if (success) {
-      navigate('/setup');
-    } else {
-      setErrorMsg('Invalid email or password.');
+        navigate('/setup');
     }
-  };
+    };
 
   return (
-    <section className="auth-card">
-      <div className="page-heading">
-        <p className="eyebrow">Registered users only</p>
-        <h2>Login</h2>
-        <p>
-          Enter your credentials to start a new game and view the ranking.
-        </p>
-      </div>
+  <section
+    className="page-card mx-auto text-light"
+    style={{
+      maxWidth: '760px',
+      marginTop: '4rem'
+    }}
+  >
+      <Row className="g-4 align-items-center">
+        <Col md={5}>
+          <h2 className="text-white fw-bold mb-3">
+            Login
+          </h2>
 
-      {errorMsg && (
-        <p className="login-error">
-          {errorMsg}
-        </p>
-      )}
+          <p className="text-secondary mb-0">
+            Sign in to start a new race, save your score and compete in the
+            general ranking.
+          </p>
+        </Col>
 
-      <form className="login-form" onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="email"
-            placeholder="name@example.com"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-        </label>
+        <Col md={7}>
 
-        <label>
-          Password
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
-        </label>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="login-email">
+              <Form.Label className="text-light fw-semibold">
+                Email
+              </Form.Label>
 
-        <button type="submit" className="primary-action">
-          Login
-        </button>
-      </form>
+              <Form.Control
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-4" controlId="login-password">
+              <Form.Label className="text-light fw-semibold">
+                Password
+              </Form.Label>
+
+              <Form.Control
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+              />
+            </Form.Group>
+
+            <Button
+              type="submit"
+              variant="danger"
+              className="w-100 fw-bold"
+            >
+              Login
+            </Button>
+          </Form>
+        </Col>
+      </Row>
     </section>
   );
 }

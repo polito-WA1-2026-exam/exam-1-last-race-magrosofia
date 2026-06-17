@@ -56,10 +56,7 @@ function App() {
       setUser(userData);
       setLoggedIn(true);
 
-      setMessage({
-        type: 'success',
-        text: 'Login successful.'
-      });
+      setMessage(null);
 
       navigate('/setup');
       return true;

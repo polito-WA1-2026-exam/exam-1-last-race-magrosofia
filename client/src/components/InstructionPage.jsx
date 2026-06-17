@@ -1,86 +1,97 @@
+import { Badge, Card, Col, Row } from 'react-bootstrap';
+
 function InstructionsPage() {
+  const phases = [
+    {
+      title: 'Setup',
+      text: 'Study the complete metro network with all stations, connections and lines.'
+    },
+    {
+      title: 'Planning',
+      text: 'Build the route by selecting the segments in sequence before the timer expires.'
+    },
+    {
+      title: 'Execution',
+      text: 'If the route is valid, the journey is executed step by step with random events.'
+    },
+    {
+      title: 'Result',
+      text: 'The final score is based on the coins left at the end of the game.'
+    }
+  ];
+
+  const rules = [
+    'The game starts with 20 coins.',
+    'The player has 90 seconds to plan the route.',
+    'The route must start from the assigned starting station.',
+    'The route must end at the assigned destination station.',
+    'Each segment can be selected only once.',
+    'The same station may be visited more than once.',
+    'Line changes are allowed only at interchange stations.',
+    'If time runs out, the selected route is submitted automatically.',
+    'Invalid or incomplete routes obtain a final score of zero.',
+    'Registered users can play multiple games and appear in the ranking.'
+  ];
+
   return (
     <section className="page-card">
-      <div className="page-heading">
-        <p className="eyebrow">Public page</p>
-        <h2>Game Instructions</h2>
-        <p>
+      <div className="mb-4">
+        <h2 className="text-white fw-bold mb-3">
+          Game Instructions
+        </h2>
+
+        <p className="text-secondary mb-0">
           Last Race is a single-player game where the player must plan and
           execute a valid route through a metro network, reaching the assigned
           destination with the highest possible score.
         </p>
       </div>
 
-      <div className="rules-grid">
-        <article className="rule-box">
-          <h3>1. Setup</h3>
-          <p>
-            The player sees the complete metro network, including all stations,
-            connections, and metro lines. This phase is used to study the map
-            before starting the game.
-          </p>
-        </article>
+      <Row className="g-3 mb-4">
+        {phases.map((phase, index) => (
+          <Col md={6} key={phase.title}>
+            <Card className="bg-dark text-light border-secondary h-100">
+              <Card.Body>
+                <Badge bg="danger" className="mb-2">
+                  Phase {index + 1}
+                </Badge>
 
-        <article className="rule-box">
-          <h3>2. Planning</h3>
-          <p>
-            The player receives a random starting station and a random
-            destination station. During this phase, the map shows only the
-            station names, without the connecting lines.
-          </p>
-        </article>
+                <Card.Title as="h3" className="h5">
+                  {phase.title}
+                </Card.Title>
 
-        <article className="rule-box">
-          <h3>3. Execution</h3>
-          <p>
-            The submitted route is validated by the application. If it is valid,
-            the journey is executed step by step and a random event is applied
-            to each segment.
-          </p>
-        </article>
+                <Card.Text className="text-secondary mb-0">
+                  {phase.text}
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
 
-        <article className="rule-box">
-          <h3>4. Result</h3>
-          <p>
-            The final score corresponds to the coins left at the end of the
-            game. Invalid or incomplete routes receive a final score of zero.
-          </p>
-        </article>
-      </div>
+      <Card className="bg-dark text-light border-secondary">
+        <Card.Body>
+          <Card.Title as="h3" className="h5 mb-3">
+            Main rules
+          </Card.Title>
 
-      <div className="rules-section">
-        <h3>Main rules</h3>
+          <Row className="g-2">
+            {rules.map((rule, index) => (
+              <Col md={6} key={rule}>
+                <div className="border border-secondary rounded-3 p-3 h-100">
+                  <Badge bg="secondary" className="me-2">
+                    {index + 1}
+                  </Badge>
 
-        <ul>
-          <li>The game starts with 20 coins.</li>
-          <li>The route must start from the assigned starting station.</li>
-          <li>The route must end at the assigned destination station.</li>
-          <li>
-            The player has 90 seconds to select the route segments in sequence.
-          </li>
-          <li>
-            If time runs out, the route built so far is submitted automatically.
-          </li>
-          <li>Each segment can be selected only once.</li>
-          <li>
-            The same station may be visited more than once, if the route remains
-            valid.
-          </li>
-          <li>Line changes are allowed only at interchange stations.</li>
-          <li>
-            During execution, each segment may trigger a positive, negative, or
-            neutral event.
-          </li>
-          <li>
-            If the final amount of coins is negative, the stored score is zero.
-          </li>
-          <li>Anonymous users can only read the instructions.</li>
-          <li>
-            Registered users can play multiple games and appear in the ranking
-            with their best result.
-          </li>
-        </ul>
-      </div>
+                  <span className="text-light">
+                    {rule}
+                  </span>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Card.Body>
+      </Card>
     </section>
   );
 }

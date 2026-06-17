@@ -1,85 +1,104 @@
-import React from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
+import { Container, Nav, Navbar } from 'react-bootstrap';
+
 import moleLogo from '../assets/mole.svg';
 
-const Header = (props) => {
+function Header({ user, onLogout }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
+
+  const navClass = (path) => (
+    isActive(path) ? 'nav-link-custom active' : 'nav-link-custom'
+  );
 
   return (
-    <header className="app-header">
-      <div className="header-left">
-        <button
-          type="button"
-          className="brand-button"
+    <Navbar
+        bg="dark"
+        className="border-bottom border-light border-opacity-25 shadow-sm"
+        data-bs-theme="dark"
+        >
+      <Container fluid className="px-4">
+        <Navbar.Brand
+          role="button"
           onClick={() => navigate('/')}
+          className="d-flex align-items-end gap-1 m-0"
         >
           <img
             src={moleLogo}
             alt="Mole Antonelliana"
-            className="brand-logo"
+            style={{
+              width: '72px',
+              height: '72px',
+              maxWidth: '72px',
+              maxHeight: '72px',
+              objectFit: 'contain',
+              display: 'block',
+              flexShrink: 0
+            }}
           />
 
-          <span className="brand-text">Last Race - Turin Edition</span>
-        </button>
-      </div>
-
-      <nav className="header-nav">
-        <button
-          type="button"
-          className="nav-button"
-          onClick={() => navigate('/')}
+          <span
+            className="fw-bold lh-1 mb-1 ms-1"
+            style={{ fontSize: '2rem' }}
         >
-          Home
-        </button>
+            Last Race - Turin Edition
+        </span>
+        </Navbar.Brand>
 
-        <button
-          type="button"
-          className="nav-button"
-          onClick={() => navigate('/instructions')}
-        >
-          Instructions
-        </button>
-
-        {props.user && (
-          <>
-            <button
-              type="button"
-              className="nav-button"
-              onClick={() => navigate('/setup')}
-            >
-              New Game
-            </button>
-
-            <button
-              type="button"
-              className="nav-button"
-              onClick={() => navigate('/ranking')}
-            >
-              Ranking
-            </button>
-          </>
-        )}
-
-        {!props.user ? (
-          <button
-            type="button"
-            className="nav-button"
-            onClick={() => navigate('/login')}
+        <Nav className="ms-auto align-items-center gap-3">
+          <Nav.Link
+            className={navClass('/')}
+            onClick={() => navigate('/')}
           >
-            Login
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="nav-button"
-            onClick={props.onLogout}
+            Home
+          </Nav.Link>
+
+          <Nav.Link
+            className={navClass('/instructions')}
+            onClick={() => navigate('/instructions')}
           >
-            Logout
-          </button>
-        )}
-      </nav>
-    </header>
+            Instructions
+          </Nav.Link>
+
+          {user && (
+            <>
+              <Nav.Link
+                className={navClass('/setup')}
+                onClick={() => navigate('/setup')}
+              >
+                New Game
+              </Nav.Link>
+
+              <Nav.Link
+                className={navClass('/ranking')}
+                onClick={() => navigate('/ranking')}
+              >
+                Ranking
+              </Nav.Link>
+            </>
+          )}
+
+          {!user ? (
+            <Nav.Link
+              className={navClass('/login')}
+              onClick={() => navigate('/login')}
+            >
+              Login
+            </Nav.Link>
+          ) : (
+            <Nav.Link
+              className="nav-link-custom"
+              onClick={onLogout}
+            >
+              Logout
+            </Nav.Link>
+          )}
+        </Nav>
+      </Container>
+    </Navbar>
   );
-};
+}
 
 export default Header;

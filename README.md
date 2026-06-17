@@ -1,11 +1,25 @@
-# Exam #N: "Exam Title"
+# Exam #1: "Last Race"
 ## Student: s353776 MAGRO SOFIA 
 
 ## React Client Application Routes
 
-- Route `/`: page content and purpose
-- Route `/something/:param`: page content and purpose, param specification
-- ...
+- Route `/`: home page of the application. It introduces the game and gives access to the instructions page and to the login/setup flow.
+
+- Route `/instructions`: public instructions page. It explains the game phases, the route validation rules and the scoring system.
+
+- Route `/login`: login page for registered users. It allows the user to authenticate with email and password.
+
+- Route `/setup`: protected setup page. It shows the complete metro network, including stations, lines and connections. From this page the user can start a new game.
+
+- Route `/game/:gameId/planning`: protected planning page. The `gameId` parameter identifies the game created by the server. The page shows the assigned start station, destination station, available segments, selected route and countdown timer.
+
+- Route `/game/:gameId/execution`: protected execution page. The `gameId` parameter identifies the game being executed. If the submitted route is valid, the page shows the journey step by step, including random events and the updated number of coins.
+
+- Route `/game/:gameId/result`: protected result page. The `gameId` parameter identifies the completed game. The page shows whether the route was valid, the final score and the journey summary.
+
+- Route `/ranking`: protected ranking page. It shows the best score achieved by each registered user.
+
+- Route `*`: fallback route for unknown URLs. It displays a not found page.
 
 ## API Server
 #### Autenthication
@@ -229,17 +243,83 @@
   - event_id
   - actual_coins
 
+## Data Models
+
+### Segment
+
+```js
+class Segment {
+  constructor(id, station1, station2, line = null) {
+    this.id = id;
+    this.station1 = station1;
+    this.station2 = station2;
+    this.line = line;
+  }
+}
+```
+
+The `Segment` model represents a metro connection between two stations on a specific line.
+
+### Game
+
+```js
+class Game {
+  constructor(id, userId, startStation, destinationStation, startedAt, completedAt, validRoute, finalCoins) {
+    this.id = id;
+    this.userId = userId;
+    this.startStation = startStation;
+    this.destinationStation = destinationStation;
+    this.startedAt = startedAt;
+    this.completedAt = completedAt;
+    this.validRoute = validRoute;
+    this.finalCoins = finalCoins;
+  }
+}
+```
+
+The `Game` model represents a game session created by a registered user.
+
+`Segment` and `Game` were modeled as classes because they are the main entities involved in the server-side game logic. `Segment` supports route validation, while `Game` represents the current game session, its owner, status and result.
+
+The other database entities are mainly read and returned as plain objects, so separate models were not necessary.
 ## Main React Components
 
-- `ListOfSomething` (in `List.js`): component purpose and main functionality
-- `GreatButton` (in `GreatButton.js`): component purpose and main functionality
-- ...
+- `App` (in `App.jsx`): root component of the React application. It checks the current session, stores the logged-in user, manages global feedback messages and defines the application routes.
 
-(only _main_ components, minor ones may be skipped)
+- `Layout` (in `Layout.jsx`): common layout used by the routed pages. It wraps the page content with the header, the footer and the global alert message.
 
+- `Header` (in `Header.jsx`): navigation bar of the application. It shows the application title and the main navigation links, changing the available actions depending on whether the user is logged in.
+
+- `HomePage` (in `HomePage.jsx`): landing page of the application. It introduces the game and gives access to the instructions page or to the login/setup flow.
+
+- `InstructionsPage` (in `InstructionPage.jsx`): public page containing the game rules and the explanation of the setup, planning, execution and result phases.
+
+- `LoginPage` (in `LoginPage.jsx`): login page for registered users. It collects the credentials and calls the login function passed by `App`.
+
+- `SetupPage` (in `SetupPage.jsx`): setup phase page. It retrieves the full metro network from the server and allows the user to start a new game.
+
+- `PlanningPage` (in `PlanningPage.jsx`): planning phase page. It manages the selected route, the countdown timer, the available segments and the route submission.
+
+- `ExecutionPage` (in `ExecutionPage.jsx`): execution phase page. It displays the result of the route validation and, for valid routes, the ordered execution steps with their random events.
+
+- `ResultPage` (in `ResultPage.jsx`): final result page. It summarizes the completed game, showing whether the route was valid and the final score.
+
+- `RankingPage` (in `RankingPage.jsx`): ranking page. It retrieves and displays the best score achieved by each registered user.
+
+- `GameNetworkMap` (in `GameNetworkMap.jsx`): SVG component used to display the metro network during the setup and planning phases.
 ## Screenshot
 
-![Screenshot](./img/screenshot.jpg)
+### HomePage
+![Screenshot](./img/homepage.png)
+
+### Setup Page
+![Screenshot](./img/setuppage.png)
+
+### Planning Page
+![Screenshot](./img/planningpage.png)
+
+### Ranking Page
+![Screenshot](./img/rankingpage.png)
 
 ## Users Credentials
 
@@ -248,8 +328,9 @@
 - username: user@example.com, password: esame
 
 ## Use of AI Tools
-## AI usage
 
-AI tools were used as support during the development process, mainly to clarify some requirements, review design choices, prepare example SQL seed data for the database, and define API test cases using a `test.http` file.
+AI tools were used as support during development to review design choices, generate example SQL seed data and prepare API test cases.
 
-The database schema, application logic, API structure, and final implementation were reviewed, adapted, and integrated by me. All generated suggestions were manually checked against the project requirements and tested through DB Browser, REST Client, and direct server execution.
+For the client side, AI tools mainly supported the graphical structure of some components, such as the metro map and CSS layout. React Bootstrap components were integrated manually for forms, buttons, cards, alerts, tables and layout elements.
+
+The application logic, API interaction, game flow, state management and final integration were implemented, adapted and tested by me.

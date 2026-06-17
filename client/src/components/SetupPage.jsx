@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Alert, Button, Card, Spinner } from 'react-bootstrap';
 
 import API from '../API/API.js';
 import GameNetworkMap from './GameNetworkMap.jsx';
@@ -13,51 +14,31 @@ function SetupPage({ setMessage }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let ignore = false;
-
     const loadNetwork = async () => {
-      setLoading(true);
-      setError('');
-
       try {
         const networkData = await API.getNetwork();
-
-        if (!ignore) {
-          setNetwork(networkData);
-        }
+        setNetwork(networkData);
       } catch (err) {
-        if (!ignore) {
-          setError('Unable to load the metro network.');
-          setMessage?.({
-            type: 'danger',
-            text: 'Unable to load the metro network.'
-          });
-        }
+        setError('Unable to load the metro network.');
+        setMessage?.({
+          type: 'danger',
+          text: 'Unable to load the metro network.'
+        });
       } finally {
-        if (!ignore) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     };
 
     loadNetwork();
 
-    return () => {
-      ignore = true;
-    };
   }, [setMessage]);
-
   const handleStartGame = async () => {
     setStartingGame(true);
     setError('');
-
     try {
       const gameData = await API.startNewGame();
-
       navigate(`/game/${gameData.gameId}/planning`, {
-        state: {
-          gameData
-        }
+        state: { gameData }
       });
     } catch (err) {
       setError('Unable to start a new game.');
@@ -68,40 +49,49 @@ function SetupPage({ setMessage }) {
       setStartingGame(false);
     }
   };
-
   if (loading) {
     return (
-      <section className="page-card">
-        <p className="eyebrow">Setup</p>
-        <h2>Loading network...</h2>
-      </section>
+      <Card bg="dark" text="light" border="secondary" className="page-card">
+        <Card.Body>
+          <Spinner animation="border" size="sm" className="me-2" />
+          Loading network...
+        </Card.Body>
+      </Card>
     );
   }
-
-  return (
-    <section className="page-card game-page">
-      <div className="page-heading game-heading-row">
+ return (
+  <Card bg="dark" text="light" border="secondary" className="page-card">
+    <Card.Body>
+      <div className="d-flex justify-content-between align-items-start mb-4 gap-4">
         <div>
-          <p className="eyebrow">Setup phase</p>
-          <h2>Study the full network</h2>
-          <p>
+            <p className="text-danger fw-bold text-uppercase small mb-1">
+            Setup phase
+            </p>
+
+            <Card.Title as="h2" className="text-white fw-bold mb-2">
+            Study the full network
+            </Card.Title>
+
+            <Card.Text className="text-secondary mb-0">
             This is the only phase where lines and connections are visible.
             Once the game starts, the planning map will show only station names.
-          </p>
+            </Card.Text>
         </div>
 
-        <button
-          type="button"
-          className="primary-action"
-          onClick={handleStartGame}
-          disabled={startingGame || !network}
+        <Button
+            variant="danger"
+            onClick={handleStartGame}
+            disabled={startingGame || !network}
+            className="flex-shrink-0"
         >
-          {startingGame ? 'Starting...' : 'Start Planning'}
-        </button>
-      </div>
-
-      {error && <p className="game-error">{error}</p>}
-
+            {startingGame ? 'Starting...' : 'Start Planning'}
+        </Button>
+    </div>
+      {error && (
+        <Alert variant="danger">
+          {error}
+        </Alert>
+      )}
       {network && (
         <>
           <GameNetworkMap
@@ -109,22 +99,29 @@ function SetupPage({ setMessage }) {
             segments={network.segments}
             showConnections={true}
           />
-
-          <div className="line-legend">
+          <div className="d-flex flex-wrap gap-2 mt-3">
             {network.lines.map((line) => (
-              <span key={line.id} className="line-legend-item">
+              <span
+                key={line.id}
+                className="badge bg-secondary d-inline-flex align-items-center gap-2 px-3 py-2"
+              >
                 <span
-                  className="line-legend-color"
-                  style={{ backgroundColor: line.color }}
-                ></span>
+                  style={{
+                    backgroundColor: line.color,
+                    width: '34px',
+                    height: '7px',
+                    borderRadius: '999px',
+                    display: 'inline-block'
+                  }}
+                />
                 {line.name}
               </span>
             ))}
           </div>
         </>
       )}
-    </section>
-  );
+    </Card.Body>
+  </Card>
+);
 }
-
 export default SetupPage;

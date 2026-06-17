@@ -1,4 +1,5 @@
 import { useLocation, useNavigate, useParams } from 'react-router';
+import { Alert, Badge, Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 
 function ResultPage() {
   const { gameId } = useParams();
@@ -11,23 +12,28 @@ function ResultPage() {
 
   if (!routeResult || Number(gameId) !== routeResult.gameId) {
     return (
-      <section className="page-card game-page">
-        <div className="page-heading">
-          <p className="eyebrow">Result phase</p>
-          <h2>Result data not available</h2>
-          <p>
-            Complete a game first. Direct access to this route is not part of the
-            normal game flow.
-          </p>
+      <section className="page-card">
+        <div className="mb-4">
+            <p className="text-danger fw-bold text-uppercase small mb-1">
+                Result phase
+            </p>
+
+            <h2 className="text-white fw-bold mb-2">
+                Result data not available
+            </h2>
+
+            <p className="text-secondary mb-0">
+                Complete a game first. Direct access to this route is not part of the
+                normal game flow.
+            </p>
         </div>
 
-        <button
-          type="button"
-          className="primary-action"
+        <Button
+          variant="danger"
           onClick={() => navigate('/setup')}
         >
           Start New Game
-        </button>
+        </Button>
       </section>
     );
   }
@@ -37,100 +43,143 @@ function ResultPage() {
   const executionSteps = routeResult.execution ?? [];
 
   return (
-    <section className="page-card game-page result-page">
-      <div className="result-header">
+    <section className="page-card">
+      <div className="d-flex justify-content-between align-items-start mb-4">
         <div>
-          <p className="eyebrow">Result phase</p>
-          <h2>Game completed</h2>
+          <p className="text-danger fw-bold text-uppercase small mb-1">
+            Result phase
+          </p>
 
-          <p>
-            The game has ended. The final score is the number of coins remaining
-            after the route execution. Negative values are stored as zero.
+          <h2 className="text-white fw-bold mb-2">
+            Game completed
+          </h2>
+
+          <p className="text-secondary mb-0">
+            The final score is the number of coins remaining after the route
+            execution. Negative values are stored as zero.
           </p>
         </div>
 
-        <div className={validRoute ? 'final-score-box' : 'final-score-box failed'}>
-          <span>Final score</span>
-          <strong>{finalScore}</strong>
-          <small>coins</small>
-        </div>
+        <Card className="bg-dark text-light border-secondary text-center">
+          <Card.Body className="px-4 py-3">
+            <small className="text-secondary text-uppercase fw-bold">
+              Final score
+            </small>
+
+            <div className="fs-1 fw-bold">
+              {finalScore}
+            </div>
+
+            <small className="text-secondary">
+              coins
+            </small>
+          </Card.Body>
+        </Card>
       </div>
 
       {automaticSubmission && (
-        <p className="game-warning">
+        <Alert variant="warning">
           The route was submitted automatically because the planning timer ended.
-        </p>
+        </Alert>
       )}
 
-      <div className="result-summary-grid">
-        <article className="result-summary-card">
-          <span>Status</span>
-          <strong className={validRoute ? 'result-valid' : 'result-invalid'}>
-            {validRoute ? 'Valid route' : 'Invalid route'}
-          </strong>
-        </article>
+      <Row className="g-3 mb-4">
+        <Col>
+          <Card className="bg-dark text-light border-secondary">
+            <Card.Body>
+              <small className="text-secondary">Status</small>
 
-        <article className="result-summary-card">
-          <span>Start</span>
-          <strong>{gameData?.startStation?.name ?? '-'}</strong>
-        </article>
+              <div>
+                <Badge bg={validRoute ? 'success' : 'danger'}>
+                  {validRoute ? 'Valid route' : 'Invalid route'}
+                </Badge>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
 
-        <article className="result-summary-card">
-          <span>Destination</span>
-          <strong>{gameData?.destinationStation?.name ?? '-'}</strong>
-        </article>
+        <Col>
+          <Card className="bg-dark text-light border-secondary">
+            <Card.Body>
+              <small className="text-secondary">Start</small>
+              <div className="fw-bold">
+                {gameData?.startStation?.name ?? '-'}
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
 
-        <article className="result-summary-card">
-          <span>Executed steps</span>
-          <strong>{executionSteps.length}</strong>
-        </article>
-      </div>
+        <Col>
+          <Card className="bg-dark text-light border-secondary">
+            <Card.Body>
+              <small className="text-secondary">Destination</small>
+              <div className="fw-bold">
+                {gameData?.destinationStation?.name ?? '-'}
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="bg-dark text-light border-secondary">
+            <Card.Body>
+              <small className="text-secondary">Executed steps</small>
+              <div className="fw-bold">
+                {executionSteps.length}
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
       {!validRoute && (
-        <div className="invalid-route-panel">
-          <strong>Reason</strong>
-          <p>
-            {routeResult.reason || 'The submitted route was invalid or incomplete.'}
-          </p>
-        </div>
+        <Alert variant="danger">
+          <strong>Reason: </strong>
+          {routeResult.reason || 'The submitted route was invalid or incomplete.'}
+        </Alert>
       )}
 
       {validRoute && executionSteps.length > 0 && (
-        <div className="result-details-card">
-          <h3>Journey summary</h3>
+        <Card className="bg-dark text-light border-secondary mb-4">
+          <Card.Body>
+            <Card.Title as="h3" className="h5 mb-3">
+              Journey summary
+            </Card.Title>
 
-          <ol className="result-step-list">
-            {executionSteps.map((step) => (
-              <li key={step.stepNumber}>
-                <span>
-                  {step.segment.station1} → {step.segment.station2}
-                </span>
+            <ListGroup variant="flush">
+              {executionSteps.map((step) => (
+                <ListGroup.Item
+                  key={step.stepNumber}
+                  className="bg-transparent text-light border-secondary d-flex justify-content-between"
+                >
+                  <span>
+                    {step.stepNumber}. {step.segment.station1} → {step.segment.station2}
+                  </span>
 
-                <strong>
-                  {step.coinsAfterStep} coins
-                </strong>
-              </li>
-            ))}
-          </ol>
-        </div>
+                  <strong>
+                    {step.coinsAfterStep} coins
+                  </strong>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Card.Body>
+        </Card>
       )}
 
-      <div className="result-actions">
-        <button
-          type="button"
-          className="primary-action"
+      <div className="d-flex gap-2">
+        <Button
+          variant="danger"
           onClick={() => navigate('/setup')}
         >
           Start New Game
-        </button>
+        </Button>
 
-        <button
-          type="button"
-          className="secondary-action"
+        <Button
+          variant="outline-light"
           onClick={() => navigate('/ranking')}
         >
           View Ranking
-        </button>
+        </Button>
       </div>
     </section>
   );
