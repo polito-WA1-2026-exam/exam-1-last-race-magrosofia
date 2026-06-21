@@ -293,17 +293,6 @@ app.post('/api/games/:gameId/route', isLoggedIn, async (req, res) => {
       return res.status(409).json({ error: 'Game already completed' });
     }
     const expired = game.isExpired(PLANNING_TIME_LIMIT_SECONDS);
-    if (expired) {
-      await dao.completeGame(gameId, false, 0);
-      return res.status(200).json({
-        gameId,
-        validRoute: false,
-        finalScore: 0,
-        expired: true,
-        reason: 'Planning time expired.',
-        execution: []
-      });
-    }
     const routeSegments = await dao.getSegmentsByIds(route);
     const orderedSegments = orderSegmentsAccordingToRoute(route, routeSegments);
     if (orderedSegments.some((segment) => segment === undefined)) {
