@@ -2,10 +2,16 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import { Alert, Badge, Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 
 function ResultPage() {
+
+// gameId comes from the URL.
+// location.state contains the completed game result passed by ExecutionPage.
+// navigate is used to start a new game or open the ranking page.
   const { gameId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
+// Result data passed through the normal game flow.
+// automaticSubmission is used only to show a message if the timer submitted the route.
   const gameData = location.state?.gameData ?? null;
   const routeResult = location.state?.routeResult ?? null;
   const automaticSubmission = Boolean(location.state?.automaticSubmission);
@@ -38,6 +44,7 @@ function ResultPage() {
     );
   }
 
+// Values extracted from the server response and displayed in the summary.
   const validRoute = routeResult.validRoute;
   const finalScore = routeResult.finalScore ?? 0;
   const executionSteps = routeResult.execution ?? [];
@@ -138,7 +145,7 @@ function ResultPage() {
           {routeResult.reason || 'The submitted route was invalid or incomplete.'}
         </Alert>
       )}
-
+{/* Journey summary shown only for valid routes with execution steps. */}
       {validRoute && executionSteps.length > 0 && (
         <Card className="bg-dark text-light border-secondary mb-4">
           <Card.Body>

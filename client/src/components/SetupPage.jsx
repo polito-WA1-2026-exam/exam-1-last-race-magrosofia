@@ -6,14 +6,20 @@ import API from '../API/API.js';
 import GameNetworkMap from './GameNetworkMap.jsx';
 
 function SetupPage({ setMessage }) {
+// network contains the metro data loaded from the server.
+// loading, startingGame and error decide what the user sees while data is loading,
+// a new game is being created, or something goes wrong.
   const [network, setNetwork] = useState(null);
   const [loading, setLoading] = useState(true);
   const [startingGame, setStartingGame] = useState(false);
   const [error, setError] = useState('');
 
+// Used after game creation to move to the planning route without reloading the page.
   const navigate = useNavigate();
 
+// Loads the full network when the setup page is opened.
   useEffect(() => {
+  
     const loadNetwork = async () => {
       try {
         const networkData = await API.getNetwork();
@@ -32,6 +38,7 @@ function SetupPage({ setMessage }) {
     loadNetwork();
 
   }, [setMessage]);
+  
   const handleStartGame = async () => {
     setStartingGame(true);
     setError('');

@@ -4,6 +4,7 @@ import { Button, Card, Col, Row } from 'react-bootstrap';
 import HeroMetroMap from './MetroMap';
 
 const HomePage = (props) => {
+  // Allows buttons to change the current page through React Router.
   const navigate = useNavigate();
 
   return (
@@ -34,7 +35,7 @@ const HomePage = (props) => {
             >
               Read Instructions
             </Button>
-
+{/* Anonymous users are sent to login; authenticated users can access the setup phase. */}
             {!props.user ? (
               <Button
                 variant="outline-light"

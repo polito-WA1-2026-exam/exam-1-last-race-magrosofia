@@ -17,13 +17,19 @@ import ErrorPage from './components/ErrorPage';
 import API from './API/API.js';
 
 function App() {
+// user and loggedIn represent the current authentication status.
+// message is used for user feedback.
+// loading prevents rendering routes before the initial session check is completed.
   const [user, setUser] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
+// This avoids full page reloads and keeps the application as a SPA
   const navigate = useNavigate();
 
+// Checks the existing server session when the app is loaded.
+// This restores the logged-in user after a page refresh.
   useEffect(() => {
   const checkAuth = async () => {
     setLoading(true);
@@ -49,6 +55,7 @@ function App() {
   checkAuth();
 }, []);
 
+// Login handler passed to LoginPage.
   const handleLogin = async (credentials) => {
     try {
       const userData = await API.login(credentials);
@@ -70,6 +77,7 @@ function App() {
     }
   };
 
+  // Logout handler passed to the layout/header.
   const handleLogout = async () => {
     try {
       await API.logout();

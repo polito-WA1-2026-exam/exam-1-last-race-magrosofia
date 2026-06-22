@@ -4,6 +4,8 @@ import { Alert, Badge, Card, Spinner, Table } from 'react-bootstrap';
 import API from '../API/API.js';
 
 function RankingPage({ setMessage }) {
+
+  // Local state for ranking data and asynchronous loading/error handling.
   const [ranking, setRanking] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

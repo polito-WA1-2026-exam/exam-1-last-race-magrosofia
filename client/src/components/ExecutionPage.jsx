@@ -13,16 +13,22 @@ function formatCost(cost) {
 }
 
 function ExecutionPage() {
+// gameId comes from the URL.
+// location.state contains the route result passed by PlanningPage.
+// navigate is used to move to the result page or back to setup.
   const { gameId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
+// Data passed by the planning phase.
   const gameData = location.state?.gameData ?? null;
   const routeResult = location.state?.routeResult ?? null;
   const automaticSubmission = Boolean(location.state?.automaticSubmission);
 
+// Controls how many server-generated execution steps are currently visible.
   const [visibleSteps, setVisibleSteps] = useState(0);
 
+// Execution steps returned by the server, one for each selected segment.
   const executionSteps = routeResult?.execution ?? [];
 
   const currentCoins = useMemo(() => {
@@ -43,6 +49,7 @@ function ExecutionPage() {
     });
   };
 
+// Fallback for direct access or page refresh.
   if (!routeResult || Number(gameId) !== routeResult.gameId) {
     return (
       <section className="page-card">
@@ -69,6 +76,8 @@ function ExecutionPage() {
     );
   }
 
+// If the server marked the route as invalid, execution is skipped
+// and the final score is zero.
   if (!routeResult.validRoute) {
     return (
       <section className="page-card">
@@ -106,6 +115,7 @@ function ExecutionPage() {
     );
   }
 
+// Checks whether all execution steps have already been revealed.
   const allStepsVisible = visibleSteps >= executionSteps.length;
 
   return (

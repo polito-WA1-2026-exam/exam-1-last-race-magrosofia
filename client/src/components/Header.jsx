@@ -4,9 +4,12 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 import moleLogo from '../assets/mole.svg';
 
 function Header({ user, onLogout }) {
+// useNavigate performs client-side navigation without reloading the page.
+// useLocation is used to know the current URL and highlight the active link.
   const navigate = useNavigate();
   const location = useLocation();
 
+// Checks whether a link corresponds to the current route.
   const isActive = (path) => location.pathname === path;
 
   const navClass = (path) => (
@@ -61,7 +64,9 @@ function Header({ user, onLogout }) {
           >
             Instructions
           </Nav.Link>
-
+          
+{/* Authenticated-only links.
+    They are rendered only when the user prop exists. */}
           {user && (
             <>
               <Nav.Link

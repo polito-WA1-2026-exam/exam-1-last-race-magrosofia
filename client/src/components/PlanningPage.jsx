@@ -5,28 +5,35 @@ import { Alert, Button, Card, Col, Row } from 'react-bootstrap';
 import API from '../API/API.js';
 import GameNetworkMap from './GameNetworkMap.jsx';
 
+// Formats a segment for display in the UI.
 function formatSegment(segment) {
   return `${segment.station1.name} — ${segment.station2.name}`;
 }
 
 function computeRemainingSeconds(startedAt, timeLimit) {
   const start = new Date(startedAt).getTime();
-
   if (Number.isNaN(start)) {
     return timeLimit;
   }
-
   const elapsed = Math.floor((Date.now() - start) / 1000);
   return Math.max(0, timeLimit - elapsed);
 }
 
 function PlanningPage({ setMessage }) {
+// gameId comes from the URL.
+// location.state contains the game data passed by SetupPage.
+// navigate is used to move to the execution page after submitting the route.
   const { gameId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
+// Game data is received from SetupPage through React Router state.
+// It contains the assigned start/destination stations, timer information and selectable segments.
   const gameData = location.state?.gameData ?? null;
 
+// selectedRoute stores the ordered list of selected segment ids.
+// remainingSeconds controls the timer shown to the player.
+// submitting and error are used to manage route submission feedback.
   const [selectedRoute, setSelectedRoute] = useState([]);
   const [remainingSeconds, setRemainingSeconds] = useState(() => (
     gameData ? computeRemainingSeconds(gameData.startedAt, gameData.timeLimit) : 0
@@ -34,9 +41,12 @@ function PlanningPage({ setMessage }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
+// routeRef keeps the latest selected route available inside the timer callback.
+// submittedRef prevents the same route from being submitted more than once.
   const routeRef = useRef(selectedRoute);
   const submittedRef = useRef(false);
 
+// Synchronizes routeRef with the latest selectedRoute state.
   useEffect(() => {
     routeRef.current = selectedRoute;
   }, [selectedRoute]);
@@ -45,7 +55,7 @@ function PlanningPage({ setMessage }) {
     if (!gameData) {
       return [];
     }
-
+// Converts selected segment ids into full segment objects for display.
     const segmentsById = new Map(
       gameData.segments.map((segment) => [segment.id, segment])
     );
@@ -86,6 +96,8 @@ function PlanningPage({ setMessage }) {
     }
   };
 
+// It updates the remaining seconds and automatically submits the route built so far
+// when the timer reaches zero.
   useEffect(() => {
     if (!gameData) {
       return undefined;
@@ -107,20 +119,22 @@ function PlanningPage({ setMessage }) {
     return () => clearInterval(intervalId);
   }, [gameData]);
 
+// Adds a segment id to the ordered route.
   const handleAddSegment = (segmentId) => {
     setSelectedRoute((oldRoute) => {
       if (oldRoute.includes(segmentId)) {
         return oldRoute;
       }
-
       return [...oldRoute, segmentId];
     });
   };
 
+// Removes the last selected segment from the route.
   const handleUndo = () => {
     setSelectedRoute((oldRoute) => oldRoute.slice(0, -1));
   };
-
+  
+// Clears the whole selected route.
   const handleClear = () => {
     setSelectedRoute([]);
   };
